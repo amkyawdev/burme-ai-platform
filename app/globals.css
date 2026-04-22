@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 min-h-screen;
+  }
+}
+
+@layer components {
+  .btn-animated {
+    @apply relative overflow-hidden transition-all duration-300 transform hover:scale-105 active:scale-95;
+  }
+  
+  .btn-animated::after {
+    content: '';
+    @apply absolute inset-0 bg-white opacity-0 transition-opacity duration-300;
+  }
+  
+  .btn-animated:hover::after {
+    @apply opacity-20;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-1;
+  }
+  
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20;
+  }
+  
+  .social-btn {
+    @apply px-6 py-3 rounded-2xl font-semibold transition-all duration-200 shadow-lg;
+    @apply hover:scale-105 active:scale-95;
+  }
+}
+
+/* Font Awesome */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Myanmar:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', 'Noto Sans Myanmar', sans-serif;
+}
