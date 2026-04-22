@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js'
 
 export async function POST(request) {
   try {
@@ -9,7 +10,7 @@ export async function POST(request) {
     const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
     const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY
 
-    // TTS - ElevenLabs
+    // TTS - ElevenLabs SDK
     if (action === 'tts') {
       if (!ELEVENLABS_API_KEY) {
         return NextResponse.json({ success: false, error: 'Set ELEVENLABS_API_KEY in Vercel' })
@@ -21,31 +22,23 @@ export async function POST(request) {
       try {
         const voice = voiceId || '21m00Tcm4TlvDq8ikWAM'
         
-        const ttsResponse = await fetch(
-          `https://api.elevenlabs.io/v1/text-to-speech/${voice}`,
+        const elevenlabs = new ElevenLabsClient({ apiKey: ELEVENLABS_API_KEY })
+        
+        const audio = await elevenlabs.textToSpeech.convert(
+          voice,
           {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'xi-api-key': ELEVENLABS_API_KEY
-            },
-            body: JSON.stringify({
-              text: text,
-              model_id: 'eleven_multilingual_v2'
-            })
+            text: text,
+            model_id: 'eleven_v3',
+            output_format: 'mp3_44100_128'
           }
         )
 
-        if (!ttsResponse.ok) {
-          const errorData = await ttsResponse.json()
-          return NextResponse.json({ 
-            success: false, 
-            error: errorData.detail?.message || 'TTS failed' 
-          })
+        // Convert to base64
+        const chunks = []
+        for await (const chunk of audio) {
+          chunks.push(chunk)
         }
-
-        const arrayBuffer = await ttsResponse.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
+        const buffer = Buffer.concat(chunks)
         const base64 = buffer.toString('base64')
         
         return NextResponse.json({ 
