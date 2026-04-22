@@ -1,82 +1,75 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import * as THREE from 'three'
 
 export default function BackgroundThree() {
-  const containerRef = useRef(null)
+  const canvasRef = useRef(null)
 
   useEffect(() => {
-    if (!containerRef.current || typeof window === 'undefined') return
+    if (!canvasRef.current) return
 
-    const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
     
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.setPixelRatio(window.devicePixelRatio)
-    renderer.setClearColor(0x000000, 0)
-    containerRef.current.appendChild(renderer.domElement)
+    const resize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
 
     // Create particles
-    const particlesGeometry = new THREE.BufferGeometry()
-    const particleCount = 1500
-    const posArray = new Float32Array(particleCount * 3)
-
-    for (let i = 0; i < particleCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 60
+    const particles = []
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2 + 1,
+        speedX: (Math.random() - 0.5) * 0.5,
+        speedY: (Math.random() - 0.5) * 0.5,
+        opacity: Math.random() * 0.5 + 0.2
+      })
     }
 
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3))
-    
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.1,
-      color: 0x8b5cf6,
-      transparent: true,
-      opacity: 0.6
-    })
-
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial)
-    scene.add(particlesMesh)
-
-    camera.position.z = 30
-
-    // Animation
     let mouseX = 0
     let mouseY = 0
-
-    const handleMouseMove = (event) => {
-      mouseX = (event.clientX / window.innerWidth) * 2 - 1
-      mouseY = (event.clientY / window.innerHeight) * 2 - 1
+    const handleMouseMove = (e) => {
+      mouseX = (e.clientX / window.innerWidth) * 2 - 1
+      mouseY = (e.clientY / window.innerHeight) * 2 - 1
     }
-
-    document.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mousemove', handleMouseMove)
 
     function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      
+      particles.forEach(p => {
+        p.x += p.speedX + mouseX * 0.2
+        p.y += p.speedY + mouseY * 0.2
+        
+        if (p.x < 0) p.x = canvas.width
+        if (p.x > canvas.width) p.x = 0
+        if (p.y < 0) p.y = canvas.height
+        if (p.y > canvas.height) p.y = 0
+        
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(139, 92, 246, ${p.opacity})`
+        ctx.fill()
+      })
+      
       requestAnimationFrame(animate)
-      
-      particlesMesh.rotation.y = mouseX * 0.5
-      particlesMesh.rotation.x = mouseY * 0.3
-      
-      renderer.render(scene, camera)
     }
-
     animate()
 
-    // Handle resize
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight
-      camera.updateProjectionMatrix()
-      renderer.setSize(window.innerWidth, window.innerHeight)
-    }
-
-    window.addEventListener('resize', handleResize)
-
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('resize', handleResize)
-      containerRef.current?.removeChild(renderer.domElement)
+      window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
     }
   }, [])
 
-  return <div ref={containerRef} className="fixed top-0 left-0 w-full h-full -z-10" />
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"
+    />
+  )
 }
