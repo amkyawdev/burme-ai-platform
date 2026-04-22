@@ -14,8 +14,8 @@ export default function TTSPage() {
   const voices = [
     { id: '21m00Tcm4TlvDq8ikWAM', name: 'Rachel', gender: 'Female', lang: 'English' },
     { id: 'AZnzlk1Xvlr_ohmBJOsoN', name: 'Arnold', gender: 'Male', lang: 'English' },
-    { id: 'cgSgspmF5nEAl3hHy3UKj52VjhHpN3u2o', name: 'Nilar', gender: 'Girl', lang: 'Myanmar' },
-    { id: 'CwhRBw10ZMtXXKqm3B2i', name: 'Thi Ha', gender: 'Boy', lang: 'Myanmar' },
+    { id: 'pNInz6obpgDQGKAiW9jL', name: 'Adam', gender: 'Boy', lang: 'Myanmar' },
+    { id: 'EXAV8p4bd87iZ8N3O6XN', name: 'Bella', gender: 'Girl', lang: 'Myanmar' },
   ]
 
   const handleGenerate = async () => {
