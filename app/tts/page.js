@@ -5,17 +5,17 @@ import Link from 'next/link'
 
 export default function TTSPage() {
   const [text, setText] = useState('')
-  const [voiceId, setVoiceId] = useState('pNInz6ogphA2injdU1Kh')
+  const [voiceId, setVoiceId] = useState('21m00Tcm4TlvDq8ikWAM')
   const [loading, setLoading] = useState(false)
   const [audioUrl, setAudioUrl] = useState(null)
   const [error, setError] = useState('')
   const audioRef = useRef(null)
 
   const voices = [
-    { id: 'pNInz6ogphA2injdU1Kh', name: 'Thi Ha', gender: 'Boy', lang: 'Burmese' },
-    { id: 'cgSgspmF5nEAl3hHy3UKj52VjhHpN3u2o', name: 'Nilar', gender: 'Girl', lang: 'Burmese' },
     { id: '21m00Tcm4TlvDq8ikWAM', name: 'Rachel', gender: 'Female', lang: 'English' },
     { id: 'AZnzlk1Xvlr_ohmBJOsoN', name: 'Arnold', gender: 'Male', lang: 'English' },
+    { id: 'cgSgspmF5nEAl3hHy3UKj52VjhHpN3u2o', name: 'Nilar', gender: 'Girl', lang: 'Myanmar' },
+    { id: 'CwhRBw10ZMtXXKqm3B2i', name: 'Thi Ha', gender: 'Boy', lang: 'Myanmar' },
   ]
 
   const handleGenerate = async () => {

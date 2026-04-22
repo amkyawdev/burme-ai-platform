@@ -19,7 +19,7 @@ export async function POST(request) {
       }
 
       try {
-        const voice = voiceId || 'pNInz6ogphA2injdU1Kh'
+        const voice = voiceId || '21m00Tcm4TlvDq8ikWAM'
         
         const ttsResponse = await fetch(
           `https://api.elevenlabs.io/v1/text-to-speech/${voice}`,
